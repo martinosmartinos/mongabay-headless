@@ -17,6 +17,7 @@ interface Props {
 }
 
 const { href, title, body, cover, bylines, date, gridArea, isPromo } = Astro.props;
+console.log({href})
 ---
 
 <li class=`link-card ${gridArea}` grid-area={gridArea}>
@@ -24,12 +25,12 @@ const { href, title, body, cover, bylines, date, gridArea, isPromo } = Astro.pro
     !isPromo && (
       <>
         <div class="inner-container">
-          <a href={href}>
+          <a href={`../${href}`}>
             <img src={cover} width="300" />
           </a>
         </div>
         <div class="card-header">
-          <a href={href}>
+          <a href={`../${href}`}>
             <h2 set:html={title} />
           </a>
           {bylines && bylines.length > 0 && (
