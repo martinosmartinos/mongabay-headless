@@ -1,0 +1,102 @@
+---
+type Byline = {
+  id: number;
+  name: string;
+  slug: string;
+};
+
+interface Props {
+  cover?: string;
+  title: string;
+  bylines?: Byline[];
+  body: string;
+  href: string;
+  date?: string;
+  gridArea?: string;
+  isPromo?: boolean;
+}
+
+const { href, title, body, cover, bylines, date, gridArea, isPromo } = Astro.props;
+---
+
+<li class=`link-card ${gridArea}` grid-area={gridArea}>
+  {
+    !isPromo && (
+      <>
+        <div class="inner-container">
+          <a href={href}>
+            <img src={cover} width="300" />
+          </a>
+        </div>
+        <div class="card-header">
+          <a href={href}>
+            <h2 set:html={title} />
+          </a>
+          {bylines && bylines.length > 0 && (
+            <small>
+              by{" "}
+              <strong>
+                <a href={`/by/${bylines[0].slug}`}>{bylines[0].name}</a>
+              </strong>
+            </small>
+          )}{" "}
+          {date && date.length > 0 && `on ${date}`}
+        </div>
+      </>
+    )
+  }
+  {
+    isPromo && (
+      <>
+        <a href={href}>
+          <img src={cover} width="auto" />
+        </a>
+        <div class="card-header">
+          <a href={href}>
+            <h2 set:html={title} />
+          </a>
+          <div set:html={body} />
+        </div>
+      </>
+    )
+  }
+</li>
+<style>
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+  .card-header {
+    display: flex;
+    flex-direction: column;
+  }
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 1px;
+    border-radius: 3px;
+  }
+  .link-card > a {
+    width: 100%;
+    text-decoration: none;
+    line-height: 1.4;
+    color: inherit;
+  }
+  h2 {
+    text-decoration: none;
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+  p {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+  }
+  .inner-container {
+    /* display: grid;
+    grid-template-columns: 100px auto; */
+    gap: 1em;
+    /* padding: 2em 0; */
+  }
+</style>

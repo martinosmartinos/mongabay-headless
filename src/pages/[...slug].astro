@@ -1,0 +1,39 @@
+---
+import Base from "../layouts/Base.astro";
+import Layout from "../layouts/Layout.astro";
+import "../../src/styles.css";
+
+const { slug } = Astro.params;
+const permalink = slug?.split("/")[2];
+
+let res = await fetch(`${import.meta.env.PUBLIC_API_ENDPOINT}/posts?slug=${permalink}&_embed`);
+let [post] = await res.json();
+
+// export async function getStaticPaths(props) {
+//   console.log(props)
+//   let data = await fetch(`${import.meta.env.PUBLIC_API_ENDPOINT}/posts`);
+//   // let data = await fetch(`${import.meta.env.PUBLIC_API_ENDPOINT}/posts`);
+//   let posts = await data.json();
+
+//   return posts.map((post) => {
+//     const date = post.date;
+//     const year = date.split("-")[0];
+//     const month = date.split("-")[1];
+
+//     return {
+//       params: { slug: `${year}/${month}/${post.slug}` },
+//       props: { post: post },
+//     };
+//   });
+// }
+---
+
+<Layout title={post.title.rendered}>
+  <Base>
+    <article>
+      <img src={post._embedded["wp:featuredmedia"]["0"].media_details.sizes.medium.source_url} />
+      <h1 set:html={post.title.rendered} />
+      <Fragment set:html={post.content.rendered} />
+    </article>
+  </Base>
+</Layout>

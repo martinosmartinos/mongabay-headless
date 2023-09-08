@@ -1,0 +1,41 @@
+---
+import Base from "../../layouts/Base.astro";
+import Layout from "../../layouts/Layout.astro";
+import Card from "../../components/Card.astro";
+import { getBylines, formatPermalink } from "../../utils";
+import "../../../src/styles.css";
+
+const { slug } = Astro.params;
+
+let res = await fetch(`${import.meta.env.PUBLIC_API_ENDPOINT}/posts?filter[byline]=${slug}&_embed`);
+let posts = await res.json();
+---
+
+<Layout title={slug || ""}>
+  <Base>
+    <ul role="list" class="link-card-grid">
+      {
+        posts.map((post) => {
+          const { date } = post;
+          const year = date.split("-")[0];
+          const month = date.split("-")[1];
+
+          const bylines = getBylines(post);
+          const permalink = formatPermalink(post);
+
+          return (
+            <Card
+              cover={
+                post._embedded["wp:featuredmedia"]["0"].media_details.sizes.thumbnail.source_url
+              }
+              href={permalink}
+              bylines={bylines}
+              title={post.title.rendered}
+              body={post.excerpt.rendered}
+            />
+          );
+        })
+      }
+    </ul>
+  </Base>
+</Layout>
